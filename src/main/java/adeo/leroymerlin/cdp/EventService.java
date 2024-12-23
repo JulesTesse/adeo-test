@@ -25,14 +25,20 @@ public class EventService {
 
     public List<Event> getFilteredEvents(String query) {
         List<Event> events = eventRepository.findAll();
-        // Filter the events list in pure JAVA here
 
-        return events;
+        // Filter the events list in pure JAVA here
+        return events.stream()
+                .filter((Event e) -> e.getBands()
+                        .stream()
+                        .anyMatch((Band b) -> b.getMembers()
+                                .stream()
+                                .anyMatch(m -> m.getName().toLowerCase().contains(query.toLowerCase()))))
+                .toList();
     }
 
     public Event updateEvent(Long id, Event event) {
         final Optional<Event> optionalEvent = eventRepository.findById(id);
-        if(optionalEvent.isEmpty()) {
+        if (optionalEvent.isEmpty()) {
             throw new EntityNotFoundException("Event with id " + id + " not found");
         }
 
