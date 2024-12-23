@@ -44,10 +44,10 @@ public class EventService {
     }
 
     private static void addCount(List<Event> filtered) {
-        filtered.stream()
+        filtered
                 .forEach(e -> {
                     e.setTitle(e.getTitle() + " [" + e.getBands().size() + "]");
-                    e.getBands().stream()
+                    e.getBands()
                             .forEach(b -> b.setName(b.getName() + " [" + b.getMembers().size() + "]"));
                 });
     }
