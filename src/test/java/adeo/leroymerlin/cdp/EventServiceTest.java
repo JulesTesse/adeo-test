@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
+import java.util.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EventServiceTest {
@@ -75,6 +75,96 @@ public class EventServiceTest {
             Assertions.assertEquals("Event with id " + eventId + " not found", exception.getMessage());
 
             Mockito.verify(eventRepository, Mockito.never()).save(Mockito.any(Event.class));
+        }
+    }
+
+    @Nested
+    class FilteredEventsTest {
+        @Test
+        void getFilteredEvents_Success() {
+            // Given
+            final Member member = new Member();
+            member.setName("Alice");
+            final Band band = new Band();
+            band.setName("Band X");
+            band.setMembers(Set.of(member));
+            final Event event = new Event();
+            event.setTitle("Event Title");
+            event.setBands(Set.of(band));
+
+            Mockito.when(eventRepository.findAll()).thenReturn(List.of(event));
+
+            // When
+            List<Event> result = eventService.getFilteredEvents("Al");
+
+            // Then
+            Assertions.assertEquals(1, result.size());
+            Assertions.assertEquals("Event Title", result.getFirst().getTitle());
+        }
+
+        @Test
+        void getFilteredEvents_NoMatch() {
+            // Given
+            final Member member = new Member();
+            member.setName("Bob");
+            final Band band = new Band();
+            band.setName("Band X");
+            band.setMembers(Set.of(member));
+            final Event event = new Event();
+            event.setTitle("Event Title");
+            event.setBands(Set.of(band));
+
+            Mockito.when(eventRepository.findAll()).thenReturn(List.of(event));
+
+            // When
+            List<Event> result = eventService.getFilteredEvents("Al");
+
+            // Then
+            Assertions.assertTrue(result.isEmpty());
+        }
+
+        @Test
+        void getFilteredEvents_MultipleEvents_OneMatch() {
+            // Given
+            final Member member1 = new Member();
+            member1.setName("Alice");
+            final Member member2 = new Member();
+            member2.setName("Bob");
+
+            final Band band1 = new Band();
+            band1.setName("Band X");
+            band1.setMembers(Set.of(member1));
+            final Band band2 = new Band();
+            band2.setName("Band Y");
+            band2.setMembers(Set.of(member2));
+
+            final Event event1 = new Event();
+            event1.setTitle("Event Title");
+            event1.setBands(Set.of(band1));
+            final Event event2 = new Event();
+            event2.setTitle("Event Title");
+            event2.setBands(Set.of(band2));
+
+            Mockito.when(eventRepository.findAll()).thenReturn(List.of(event1, event2));
+
+            // When
+            List<Event> result = eventService.getFilteredEvents("Al");
+
+            // Then
+            Assertions.assertEquals(1, result.size());
+            Assertions.assertEquals("Event Title", result.getFirst().getTitle());
+        }
+
+        @Test
+        void getFilteredEvents_EmptyList() {
+            // Given
+            Mockito.when(eventRepository.findAll()).thenReturn(Collections.emptyList());
+
+            // When
+            List<Event> result = eventService.getFilteredEvents("Alice");
+
+            // Then
+            Assertions.assertTrue(result.isEmpty());
         }
     }
 }
