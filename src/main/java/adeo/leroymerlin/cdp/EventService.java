@@ -1,8 +1,10 @@
 package adeo.leroymerlin.cdp;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -26,5 +28,18 @@ public class EventService {
         // Filter the events list in pure JAVA here
 
         return events;
+    }
+
+    public Event updateEvent(Long id, Event event) {
+        Optional<Event> optionalEvent = eventRepository.findById(id);
+        if(optionalEvent.isEmpty()) {
+            throw new EntityNotFoundException("Event with id " + id + " not found");
+        }
+
+        Event existing = optionalEvent.get();
+        existing.setComment(event.getComment());
+        existing.setNbStars(event.getNbStars());
+
+        return eventRepository.save(existing);
     }
 }
