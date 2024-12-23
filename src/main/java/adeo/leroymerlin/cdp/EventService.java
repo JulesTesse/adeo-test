@@ -31,12 +31,12 @@ public class EventService {
     }
 
     public Event updateEvent(Long id, Event event) {
-        Optional<Event> optionalEvent = eventRepository.findById(id);
+        final Optional<Event> optionalEvent = eventRepository.findById(id);
         if(optionalEvent.isEmpty()) {
             throw new EntityNotFoundException("Event with id " + id + " not found");
         }
 
-        Event existing = optionalEvent.get();
+        final Event existing = optionalEvent.get();
         existing.setComment(event.getComment());
         existing.setNbStars(event.getNbStars());
 
