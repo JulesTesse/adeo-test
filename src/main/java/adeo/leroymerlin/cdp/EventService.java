@@ -29,7 +29,7 @@ public class EventService {
         // Filter the events list in pure JAVA here
         String normalizedQuery = query.toLowerCase();
 
-        return events.stream()
+        List<Event> filtered = events.stream()
                 .filter(e -> e.getBands() != null && e.getBands()
                         .stream()
                         .filter(b -> b.getMembers() != null)
@@ -38,6 +38,18 @@ public class EventService {
                                 .filter(m -> m.getName() != null)
                                 .anyMatch(m -> m.getName().toLowerCase().contains(normalizedQuery))))
                 .toList();
+
+        addCount(filtered);
+        return filtered;
+    }
+
+    private static void addCount(List<Event> filtered) {
+        filtered.stream()
+                .forEach(e -> {
+                    e.setTitle(e.getTitle() + " [" + e.getBands().size() + "]");
+                    e.getBands().stream()
+                            .forEach(b -> b.setName(b.getName() + " [" + b.getMembers().size() + "]"));
+                });
     }
 
     public Event updateEvent(Long id, Event event) {
