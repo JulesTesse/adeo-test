@@ -99,7 +99,7 @@ public class EventServiceTest {
 
             // Then
             Assertions.assertEquals(1, result.size());
-            Assertions.assertEquals("Event Title", result.getFirst().getTitle());
+            Assertions.assertEquals("Event Title ["+result.size()+"]", result.getFirst().getTitle());
         }
 
         @Test
@@ -152,7 +152,7 @@ public class EventServiceTest {
 
             // Then
             Assertions.assertEquals(1, result.size());
-            Assertions.assertEquals("Event Title", result.getFirst().getTitle());
+            Assertions.assertEquals("Event Title ["+result.size()+"]", result.getFirst().getTitle());
         }
 
         @Test
