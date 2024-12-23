@@ -27,12 +27,16 @@ public class EventService {
         List<Event> events = eventRepository.findAll();
 
         // Filter the events list in pure JAVA here
+        String normalizedQuery = query.toLowerCase();
+
         return events.stream()
-                .filter((Event e) -> e.getBands()
+                .filter(e -> e.getBands() != null && e.getBands()
                         .stream()
-                        .anyMatch((Band b) -> b.getMembers()
+                        .filter(b -> b.getMembers() != null)
+                        .anyMatch(b -> b.getMembers()
                                 .stream()
-                                .anyMatch(m -> m.getName().toLowerCase().contains(query.toLowerCase()))))
+                                .filter(m -> m.getName() != null)
+                                .anyMatch(m -> m.getName().toLowerCase().contains(normalizedQuery))))
                 .toList();
     }
 
