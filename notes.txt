@@ -1,0 +1,8 @@
+Résolution de bugs :
+
+J'ai commencé par prendre connaissance du Readme, puis par examiner rapidement le code et sa structure.
+
+J'ai vu que le controller n'appelait pas le service, donc j'ai ajouté la méthode dans le service puis corrigé ça (review)
+J'ai ensuite enlevé le deleteById dans le repo, il fait doublon à celui de JPA, et avec le readOnly = true, cela posait problème
+
+Pour les filtres, j'ai fait ça en stream, car il était demandé de le faire en Java (je serai plutôt parti sur des criteria builder sinon)
